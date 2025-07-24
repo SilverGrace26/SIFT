@@ -216,7 +216,8 @@ void refineKeypoints(const ss::ScaleSpace& DoG_scale_space, kp::KeyPoint& keypoi
 
         // Low contrast check 
         float refined_dog_val = accessScaleSpace(DoG_scale_space, keypoint);
-        if (std::abs(refined_dog_val) < 0.03f) { 
+        float contrast_threshold = 0.04;
+        if (std::abs(refined_dog_val) < contrast_threshold) { 
              keypoint.x = -1e6; 
              return;
         }
@@ -228,7 +229,9 @@ void refineKeypoints(const ss::ScaleSpace& DoG_scale_space, kp::KeyPoint& keypoi
         return;
     }
 
-    if (isOnEdge(hessian, 10.0f)) { // Typically r = 10, so (r+1)^2/r = 121/10 = 12.1
+    float edge_threshold = 10.0f;
+
+    if (isOnEdge(hessian, edge_threshold)) { // Typically r = 10, so (r+1)^2/r = 121/10 = 12.1
         keypoint.x = -1e6; 
         return;
     }

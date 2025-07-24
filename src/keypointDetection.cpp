@@ -7,28 +7,30 @@ namespace kp {
   
 bool isLocalExtremaPerOctave(const ss::Octave& DoG_octave, int scale_idx, int row, int col, const float contrast_threshold){
 
-  const float val = DoG_octave[scale_idx].at<float>(row, col);
-  if(val < contrast_threshold) return false;
-      
-  for(int d_scale_idx = -1 ; d_scale_idx <= 1; d_scale_idx++){
-    
-    const cv::Mat image = DoG_octave[scale_idx + d_scale_idx];
+    const float val = DoG_octave[scale_idx].at<float>(row, col);
+    if (std::abs(val) < contrast_threshold) return false;
 
-    for(int d_row = -1; d_row <= 1; d_row++){
-      for(int d_col = -1; d_col <= 1; d_col++){
+    bool is_max = true;
+    bool is_min = true;
 
-        if (d_scale_idx == 0 && d_row == 0 && d_col == 0) continue;     
+    for (int ds = -1; ds <= 1; ds++) {
+        const cv::Mat& neighbor_img = DoG_octave[scale_idx + ds];
+        for (int dr = -1; dr <= 1; dr++) {
+            for (int dc = -1; dc <= 1; dc++) {
+                if (ds == 0 && dr == 0 && dc == 0) continue;
 
-        // For borders
-        if (row + d_row < 0 || row + d_row >= image.rows || col + d_col < 0 || col + d_col >= image.cols) continue;
+                int r = row + dr;
+                int c = col + dc;
+                if (r < 0 || r >= neighbor_img.rows || c < 0 || c >= neighbor_img.cols) continue;
 
-        if (val <= image.at<float>(row + d_row, col + d_col)) return false;
-      }
+                float neighbor_val = neighbor_img.at<float>(r, c);
+                if (val <= neighbor_val) is_max = false;
+                if (val >= neighbor_val) is_min = false;
+            }
+        }
     }
 
-  }
-
-  return true;
+    return is_max || is_min;
 
 }
   

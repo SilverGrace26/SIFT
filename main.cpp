@@ -65,14 +65,12 @@ int main() {
     // Converting CV::Mat to standard vector 
     std::vector<std::vector<float>> input_vec = convertMatToVector(input);
 
+    std::cout<<"Initial size of kepoints array : "<<keypoints.size()<<'\n';
     std::vector<SIFT::KeyPoint> refined_and_valid_keypoints;
-
-    int indicator = 0;
 
     for(auto& kp : keypoints){
 
       // Step 5: Refine keypoints (remove low contrast / edge responses)
-      std::cout<<++indicator<<std::endl;
       SIFT::refineKeypoints(DoG_pyramid, kp);
 
       // Check if the keypoint is still valid after refinement
@@ -87,6 +85,8 @@ int main() {
           refined_and_valid_keypoints.push_back(kp);
       }
     }
+
+    std::cout<<"Size of keypoints array after refinement : "<<refined_and_valid_keypoints.size()<<'\n';
 
     // Step 8: Visualize keypoints - use the refined_and_valid_keypoints
     cv::Mat output_image_with_keypoints;
