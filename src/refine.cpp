@@ -188,7 +188,10 @@ void refineKeypoints(const ss::ScaleSpace& DoG_scale_space, kp::KeyPoint& keypoi
     }
 
     // Apply offset if it's within limits
-    if (std::abs(offset[0]) < 0.5f && std::abs(offset[1]) < 0.5f && std::abs(offset[2]) < 0.5f) {
+    float offset_threshold_limit = 1.0f;
+    if (std::abs(offset[0]) < offset_threshold_limit && 
+        std::abs(offset[1]) < offset_threshold_limit && 
+        std::abs(offset[2]) < offset_threshold_limit) {
         keypoint.x += offset[0];
         keypoint.y += offset[1];
         keypoint.scale_idx += offset[2];
