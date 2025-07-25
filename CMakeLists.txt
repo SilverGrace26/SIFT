@@ -32,6 +32,7 @@ set(AUX_SOURCES
     src/histogram.cpp
     src/descriptor.cpp
     src/visualization.cpp
+    src/sift.cpp
 )
 
 add_library(aux STATIC ${AUX_SOURCES})
