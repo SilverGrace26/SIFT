@@ -9,7 +9,6 @@
 
 namespace desc {
 
-
 std::vector<float> flattenHist(const std::vector<std::vector<float>>& hist) {
     std::vector<float> descriptor;
     for (const auto& angle_bin : hist) {

@@ -21,7 +21,7 @@ int main() {
 
     SIFT::Config config;
 
-    // Step 1: Load image
+    // Load image
     cv::Mat original_input_8U = cv::imread("../Tower.jpeg", cv::IMREAD_GRAYSCALE); 
     if (original_input_8U.empty()) {
         std::cerr << "Failed to load image." << std::endl;
@@ -30,14 +30,17 @@ int main() {
 
     cv::Mat input;
     original_input_8U.convertTo(input, CV_32F);
-    std::cout<<"Image is Loaded."<<'\n';
+    std::cout << "Image is Loaded." << '\n';
 
     //Execute SIFT API 
-    std::vector<kp::KeyPoint> refined_and_valid_keypoints =  SIFT::executeSIFT(config, input);
-    
-    std::cout<<"Size of keypoints array after refinement : "<<refined_and_valid_keypoints.size()<<'\n';
+    std::pair<std::vector<Keypoint>, std::vector<desc::Desc>> result = executeSIFT(config, input_image);
 
-    // Step 8: Visualize keypoints - use the refined_and_valid_keypoints
+    std::vector<kp::KeyPoint> refined_and_valid_keypoints = result.first;
+    std::vector<desc::Desc> descriptors = result.second;
+
+    std::cout << "Size of keypoints array after refinement : " << refined_and_valid_keypoints.size() << '\n';
+
+    // Visualize keypoints - use the refined_and_valid_keypoints
     cv::Mat output_image_with_keypoints;
     vis::drawKeypoints(original_input_8U, refined_and_valid_keypoints, output_image_with_keypoints, cv::Scalar(0, 0, 255), 20); 
 

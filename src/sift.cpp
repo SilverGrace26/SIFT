@@ -16,7 +16,7 @@ static std::vector<std::vector<float>> convertMatToVector(const cv::Mat& mat) {
     return vec2D;
 }
 
-std::vector<kp::KeyPoint> executeSIFT(const Config& config, cv::Mat& input){
+std::pair< std::vector<kp::KeyPoint>, std::vector<desc::Desc> descriptors > executeSIFT(const Config& config, cv::Mat& input){
 
     int scales_per_octave = config.scales_per_octave;
     float initial_scale = config.initial_scale;
@@ -48,6 +48,7 @@ std::vector<kp::KeyPoint> executeSIFT(const Config& config, cv::Mat& input){
 
     std::cout<<"Initial size of kepoints array : "<<keypoints.size()<<'\n';
     std::vector<kp::KeyPoint> refined_and_valid_keypoints;
+    std::vector<desc::Desc> descriptors;
 
     for(auto& kp : keypoints){
 
@@ -63,11 +64,12 @@ std::vector<kp::KeyPoint> executeSIFT(const Config& config, cv::Mat& input){
           // Step 7: Compute descriptors
           desc::Desc descriptor = desc::createDescStruct(histogram);
 
+          descriptors.push_back(descriptor);
           refined_and_valid_keypoints.push_back(kp);
       }
     }
 
-    return refined_and_valid_keypoints;
+    return std::make_pair(refined_and_valid_keypoints, descriptors);
 }
 
 }
